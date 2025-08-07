@@ -1,32 +1,43 @@
-from telegram import Update
-from telegram.ext import (
-    Application,  # جایگزین Updater در نسخه‌های جدید
-    CommandHandler,
-    MessageHandler,
-    filters,
-    ContextTypes
-)
+from telegram.ext import Application, CommandHandler, MessageHandler, filters
+from datetime import datetime
+import os
 
-async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    await update.message.reply_text('سلام! ربات امضای من آماده است.\nفایل مورد نظر را برای امضا ارسال کنید.')
+TOKEN = "توکن_ربات_شما"
 
-async def handle_document(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    document = update.message.document
+async def start(update, context):
+    user = update.effective_user
     await update.message.reply_text(
-        f'فایل دریافت شد!\n'
-        f'نام فایل: {document.file_name}\n'
-        f'حجم فایل: {document.file_size} بایت\n'
-        'در حال پردازش برای افزودن امضا...'
+        f"سلام {user.first_name}!\n"
+        "فایل APK را برای دریافت اطلاعات امضا ارسال کنید."
     )
-    # اینجا می‌توانید عملیات امضا زدن به فایل را اضافه کنید
 
-def main() -> None:
-    application = Application.builder().token("7774050939:AAElUM4iRvmGi_6ayCk27Syp4XIu6fCcsJs").build()
+async def handle_apk(update, context):
+    file = await update.message.document.get_file()
     
-    application.add_handler(CommandHandler("start", start))
-    application.add_handler(MessageHandler(filters.Document.ALL, handle_document))
+    # ذخیره موقت فایل
+    file_path = f"temp_{datetime.now().timestamp()}.apk"
+    await file.download_to_drive(file_path)
     
-    application.run_polling()
+    # اینجا می‌توانید از کتابخانه‌های قانونی برای تحلیل APK استفاده کنید
+    # مانند:
+    # from androguard.core import APK
+    # a = APK(file_path)
+    # signature = a.get_signature_name()
+    
+    await update.message.reply_text(
+        "✅ فایل دریافت شد\n"
+        "📦 نام فایل: " + update.message.document.file_name + "\n"
+        "📏 حجم: " + str(update.message.document.file_size) + " بایت\n"
+        "⚠️ توجه: این ربات فقط برای تحلیل فایل‌هاست\n"
+        "برای نصب باید تنظیمات امنیتی دستگاه را موقتاً تغییر دهید"
+    )
+    
+    # حذف فایل موقت
+    os.remove(file_path)
 
-if __name__ == '__main__':
-    main()
+app = Application.builder().token(TOKEN).build()
+app.add_handler(CommandHandler("start", start))
+app.add_handler(MessageHandler(filters.Document.MIME_TYPE("application/vnd.android.package-archive"), handle_apk))
+
+print("ربات تحلیلگر APK فعال شد...")
+app.run_polling()
