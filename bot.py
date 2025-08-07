@@ -9,7 +9,7 @@ def handle_document(update: Update, context: CallbackContext) -> None:
     update.message.reply_text('فایل شما امضا شد!')
 
 def main():
-    updater = Updater("TOKEN_BOT_SHOMA", use_context=True)
+    updater = Updater("7774050939:AAElUM4iRvmGi_6ayCk27Syp4XIu6fCcsJs", use_context=True)
     dispatcher = updater.dispatcher
 
     dispatcher.add_handler(CommandHandler("start", start))
