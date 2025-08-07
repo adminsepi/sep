@@ -1,3 +1,3 @@
 #!/bin/bash
-sudo apt update
-sudo apt install -y openjdk-17-jre
+apt-get update -y
+apt-get install -y openjdk-17-jre
