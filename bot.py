@@ -2,7 +2,7 @@ from telegram.ext import Application, CommandHandler, MessageHandler, filters
 from datetime import datetime
 import os
 
-TOKEN = "توکن_ربات_شما"
+TOKEN = "7774050939:AAElUM4iRvmGi_6ayCk27Syp4XIu6fCcsJs"
 
 async def start(update, context):
     user = update.effective_user
