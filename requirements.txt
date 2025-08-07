@@ -1,3 +1,1 @@
 python-telegram-bot==20.0
-androguard==3.4.0a1  # برای تحلیل APK (اختیاری)
-python-dotenv==1.0.0  # اگر از متغیرهای محیطی استفاده می‌کنید
